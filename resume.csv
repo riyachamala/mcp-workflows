@@ -1,0 +1,22 @@
+import pandas as pd
+
+data = {
+    "Experience": [
+        "Developed backend APIs using Python and Flask for a healthcare platform.",
+        "Built firmware for embedded systems using C on ARM Cortex-M4.",
+        "Created dashboards using JavaScript and React for internal analytics.",
+        "Contributed to an AI chatbot project using Python and LangChain.",
+        "Collaborated on an FPGA design project using VHDL and Verilog.",
+    ],
+    "Education": [
+        "Bachelor's in Computer Engineering, Purdue",
+        "Minor in Cybersecurity",
+        "Coursework: Data Structures, Digital Systems",
+        "GPA: 3.5/4.0",
+        "",
+    ]
+}
+
+df = pd.DataFrame(data)
+df.to_csv("resume.csv", index=False)
+print("✅ resume.csv created.")
