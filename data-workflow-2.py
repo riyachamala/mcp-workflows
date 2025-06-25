@@ -2,6 +2,10 @@ import os
 import pandas as pd
 from autogen import AssistantAgent, UserProxyAgent, GroupChat, GroupChatManager
 
+# load the .env file into script
+from dotenv import load_dotenv
+load_dotenv() # loads variables from .env into os.environ
+
 # this workflow is meant to move some data around in the background to test workflow and MCP configurations
 
 # build the gpt_configuration object
@@ -19,7 +23,8 @@ base_llm_config = {
 }
 
 # define the file path
-CSV_PATH = "resume.csv"
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))  # this points to mcp-workflows
+CSV_PATH = os.path.join(BASE_DIR, "code", "resume.csv")
 OUTPUT_PATH = "resume_analysis.csv"
 
 # define agent A (read and summarize the resume)
@@ -89,8 +94,17 @@ user_proxy = UserProxyAgent(
 )
 
 # set up groupchat and groupchat manager
-groupchat = GroupChat(agents=[user_proxy, agent_a, agent_b, agent_c], messages=[], max_round=20) # max_round controls the total number of back-and-forth exchanges between agents
-manager = GroupChatManager(groupchat=groupchat, name="MCPWorkflowManager")
+groupchat = GroupChat(agents=[user_proxy, agent_a, agent_b, agent_c], 
+                      messages=[], 
+                      # select_speaker_auto=True,
+                      max_round=20, # max_round controls the total number of back-and-forth exchanges between agents
+                      )
+
+manager = GroupChatManager(groupchat=groupchat, 
+                           name="MCPWorkflowManager",
+                           llm_config=base_llm_config,
+                           # select_speaker_auto_llm_config=base_llm_config,
+                           )
 
 # error check
 if not os.path.exists(CSV_PATH):
