@@ -2,6 +2,11 @@ import os
 import pandas as pd
 from autogen import AssistantAgent, UserProxyAgent, GroupChat, GroupChatManager
 
+# load the .env file into script
+from dotenv import load_dotenv
+load_dotenv() # loads variables from .env into os.environ
+
+
 # this workflow is meant to move some data around in the background to test workflow and MCP configurations
 os.environ["OPENAI_API_KEY"] = os.getenv("GROQ_API_KEY") or "your_groq_api_key_here"
 os.environ["OPENAI_API_BASE"] = "https://api.groq.com/openai/v1"
@@ -10,7 +15,7 @@ os.environ["OPENAI_API_BASE"] = "https://api.groq.com/openai/v1"
 base_llm_config = {
     "config_list": [
         {
-            "model": "llama3-8b-8192",
+            "model": "llama3-8b-8192", # update this model
             "api_key": os.environ["OPENAI_API_KEY"],
             "base_url": os.environ["OPENAI_API_BASE"],
         }
@@ -73,14 +78,13 @@ groupchat = GroupChat(
     agents=[user_proxy, agent_a, agent_b], 
     messages=[],
     max_round=10, # max_round controls the total number of back-and-forth exchanges between agents
-    # select_speaker_auto_llm_config=None,
+    select_speaker_auto_llm_config=base_llm_config,
     )
 manager = GroupChatManager(
     groupchat=groupchat, 
     name="MCPWorkflowManager", 
-    # select_speaker_auto_llm_config=None,
+    llm_config=base_llm_config,
     )
-
 # start the workflow
 user_proxy.initiate_chat(
     manager,
